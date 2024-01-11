@@ -29,3 +29,6 @@ class CustomerSignup(APIView):
             )
             message = {"Message": "Customer Signup Successful"}
             return JsonResponse(message, status=status.HTTP_201_CREATED, safe=False)
+        else:
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+#Exception can be used here
