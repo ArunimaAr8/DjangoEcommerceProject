@@ -45,7 +45,7 @@ class CustomerLogin(APIView):
             if serializer.is_valid():
                 username = serializer.data["username"]
                 password = serializer.data["password"]
-                logindata = list(CustomerData.objects.filter(username_id=username, password=password).values())
+                logindata = list(CustomerData.objects.filter(username=username, password=password).values())
                 if len(logindata) == 1:
                     message = {"Message": "Login Successful"}
                     return JsonResponse(message, status=status.HTTP_200_OK)
