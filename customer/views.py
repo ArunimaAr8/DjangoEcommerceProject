@@ -55,3 +55,14 @@ class CustomerLogin(APIView):
         except Exception as e:
             message = {"Message": str(e)}
             return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
+
+
+# Get Customer Profile API(GET API) Starts here
+class GetProfile(APIView):
+    def get(self, request, username):
+        try:
+            profiledata = list(Profile.objects.filter(username_id=username).values())
+            return JsonResponse(profiledata, status=status.HTTP_200_OK, safe=False)
+        except Exception as e:
+            message = {"Message": str(e)}
+            return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
