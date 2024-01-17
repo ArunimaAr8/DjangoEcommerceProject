@@ -5,7 +5,7 @@ from .serializers import *
 from .models import *
 
 
-# Customer Signup API(POST API) Starts here
+# CustomerSignup API(POST API) Starts here
 class CustomerSignup(APIView):
     def post(self, request):
         try:
@@ -37,7 +37,7 @@ class CustomerSignup(APIView):
             return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
 
 
-# Customer Login API(POST API) Starts here
+# CustomerLogin API(POST API) Starts here
 class CustomerLogin(APIView):
     def post(self, request):
         try:
@@ -57,12 +57,42 @@ class CustomerLogin(APIView):
             return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
 
 
-# Get Customer Profile API(GET API) Starts here
+# GetProfile API(GET API) for Customer Starts here
 class GetProfile(APIView):
     def get(self, request, username):
         try:
             profiledata = list(Profile.objects.filter(username_id=username).values())
             return JsonResponse(profiledata, status=status.HTTP_200_OK, safe=False)
+        except Exception as e:
+            message = {"Message": str(e)}
+            return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
+
+
+# update API(Put API) for customer starts here
+class UpdateProfile(APIView):
+    def put(self, request):
+        try:
+            serializer = UpdateProfileSerializer(data=request.data)
+            if serializer.is_valid():
+                username = serializer.data["username"]
+                Profile.objects.filter(username_id=username).update(
+                    **serializer.data
+                )
+                message = {"Message": "Profile Update Successful"}
+                return JsonResponse(message, status=status.HTTP_200_OK, safe=False)
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+        except Exception as e:
+            message = {"Message": str(e)}
+            return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
+
+
+# Delete API(Delete) starts here
+class DeleteCustomer(APIView):
+    def delete(self, request, username):
+        try:
+            CustomerData.objects.filter(username=username).delete()
+            message = {"Message": "Customer Deleted Successfully"}
+            return JsonResponse(message, status=status.HTTP_204_NO_CONTENT, safe=False)
         except Exception as e:
             message = {"Message": str(e)}
             return JsonResponse(message, status.HTTP_400_BAD_REQUEST)
